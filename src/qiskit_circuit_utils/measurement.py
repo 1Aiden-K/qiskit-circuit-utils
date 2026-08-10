@@ -211,4 +211,4 @@ def all(
 
     Classical bits are added to the circuit automatically by Qiskit.
     """
-    circuit.all()
+    circuit.measure_all()
