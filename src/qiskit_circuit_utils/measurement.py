@@ -6,7 +6,7 @@ from typing import TypeAlias
 from qiskit import QuantumCircuit
 from qiskit.circuit import Clbit, Qubit
 
-from .types import (
+from ._types import (
     ClbitSpecifier,
     MeasurementPair,
     PauliBasis,

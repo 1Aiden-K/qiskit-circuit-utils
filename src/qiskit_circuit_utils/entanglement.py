@@ -5,7 +5,7 @@ from collections.abc import Sequence
 from qiskit import QuantumCircuit
 
 from . import correction, measurement, preparation
-from .types import ClbitSpecifier, QubitSpecifier
+from ._types import ClbitSpecifier, QubitSpecifier
 
 
 def swap(

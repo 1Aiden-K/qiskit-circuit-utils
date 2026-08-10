@@ -9,11 +9,15 @@ from qiskit import QuantumCircuit
 from qiskit.circuit import Qubit
 from qiskit.quantum_info import random_statevector
 
-BellState = Literal["phi+", "phi-", "psi+", "psi-"]
+from ._types import (
+    BellState,
+    Eigenvalue,
+    QubitSpecifier,
+)
 
 def bell_state(
     circuit: QuantumCircuit,
-    qubits: Sequence[Qubit],
+    qubits: Sequence[QubitSpecifier],
     state: BellState = "phi+",
 ) -> None:
     """Prepare two qubits in one of the four Bell states.
@@ -55,7 +59,7 @@ def bell_state(
 
 def ghz_state(
     circuit: QuantumCircuit,
-    qubits: Sequence[Qubit],
+    qubits: Sequence[QubitSpecifier],
 ) -> None:
     """Prepare the specified qubits in a GHZ state.
 
@@ -80,7 +84,7 @@ def ghz_state(
 
 def w_state(
     circuit: QuantumCircuit,
-    qubits: Sequence[Qubit],
+    qubits: Sequence[QubitSpecifier],
 ) -> None:
     """Prepare the specified qubits in a W state.
 
@@ -115,7 +119,7 @@ def w_state(
 
 def zero_state(
     circuit: QuantumCircuit,
-    qubits: Sequence[Qubit],
+    qubits: Sequence[QubitSpecifier],
 ) -> None:
     """Prepare the specified qubits in the |0> state.
 
@@ -127,7 +131,7 @@ def zero_state(
 
 def one_state(
     circuit: QuantumCircuit,
-    qubits: Sequence[Qubit],
+    qubits: Sequence[QubitSpecifier],
 ) -> None:
     """Prepare the specified qubits in the |1> state.
 
@@ -140,7 +144,7 @@ def one_state(
 
 def plus_state(
     circuit: QuantumCircuit,
-    qubits: Sequence[Qubit],
+    qubits: Sequence[QubitSpecifier],
 ) -> None:
     """Prepare the specified qubits in the |+> state.
 
@@ -153,7 +157,7 @@ def plus_state(
 
 def minus_state(
     circuit: QuantumCircuit,
-    qubits: Sequence[Qubit],
+    qubits: Sequence[QubitSpecifier],
 ) -> None:
     """Prepare the specified qubits in the |-> state.
 
@@ -167,7 +171,7 @@ def minus_state(
 
 def basis_state(
     circuit: QuantumCircuit,
-    qubits: Sequence[Qubit],
+    qubits: Sequence[QubitSpecifier],
     state: str,
 ) -> None:
     """Prepare a computational basis state.
@@ -197,7 +201,7 @@ def basis_state(
 
 def uniform_superposition(
     circuit: QuantumCircuit,
-    qubits: Sequence[Qubit],
+    qubits: Sequence[QubitSpecifier],
 ) -> None:
     """Prepare a uniform superposition over the specified qubits.
 
@@ -211,7 +215,7 @@ def uniform_superposition(
 
 def statevector(
     circuit: QuantumCircuit,
-    qubits: Sequence[Qubit],
+    qubits: Sequence[QubitSpecifier],
     statevector: Sequence[complex],
 ) -> None:
     """Prepare an arbitrary statevector on the specified qubits.
@@ -237,7 +241,7 @@ def statevector(
 
 def product_state(
     circuit: QuantumCircuit,
-    qubits: Sequence[Qubit],
+    qubits: Sequence[QubitSpecifier],
     states: Sequence[Sequence[complex]],
 ) -> None:
     """Prepare a product of arbitrary single-qubit states.
@@ -269,7 +273,7 @@ def product_state(
 
 def random_state(
     circuit: QuantumCircuit,
-    qubits: Sequence[Qubit],
+    qubits: Sequence[QubitSpecifier],
     seed: int | None = None,
 ) -> None:
     """Prepare a random pure state on the specified qubits.
@@ -289,7 +293,7 @@ def random_state(
 def x_eigenstate(
     circuit: QuantumCircuit,
     qubit: Qubit,
-    eigenvalue: Literal[1, -1] = 1,
+    eigenvalue: Eigenvalue = 1,
 ) -> None:
     """Prepare an eigenstate of the Pauli-X operator.
 
@@ -314,7 +318,7 @@ def x_eigenstate(
 def y_eigenstate(
     circuit: QuantumCircuit,
     qubit: Qubit,
-    eigenvalue: Literal[1, -1] = 1,
+    eigenvalue: Eigenvalue = 1,
 ) -> None:
     """Prepare an eigenstate of the Pauli-Y operator.
 
@@ -340,7 +344,7 @@ def y_eigenstate(
 def z_eigenstate(
     circuit: QuantumCircuit,
     qubit: Qubit,
-    eigenvalue: Literal[1, -1] = 1,
+    eigenvalue: Eigenvalue = 1,
 ) -> None:
     """Prepare an eigenstate of the Pauli-Z operator.
 

@@ -6,14 +6,11 @@ from typing import TypeAlias
 from qiskit import QuantumCircuit
 from qiskit.circuit import Qubit
 
-
-QubitSpecifier: TypeAlias = int | Qubit
-QubitPair: TypeAlias = tuple[QubitSpecifier, QubitSpecifier]
-QubitTriple: TypeAlias = tuple[
+from ._types import (
+    QubitPair,
     QubitSpecifier,
-    QubitSpecifier,
-    QubitSpecifier,
-]
+    QubitTriple,
+)
 
 # Pauli gates
 
