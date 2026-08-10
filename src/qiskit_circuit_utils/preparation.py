@@ -1,6 +1,6 @@
 """Utilities for preparing states across qubits."""
 
-import math
+import numpy as np
 from collections.abc import Sequence
 
 from qiskit import QuantumCircuit
@@ -13,6 +13,7 @@ from ._types import (
     QubitSpecifier,
 )
 from ._validation import (
+    require_distinct_qubits,
     require_length,
     require_min_qubits,
     require_non_empty,
@@ -87,31 +88,27 @@ def w_state(
 ) -> None:
     """Prepare the specified qubits in a W state.
 
-    The qubits are assumed to initially be in the |0> state.
+    The W state is an equal superposition of all computational basis
+    states containing exactly one excitation.
 
     Args:
         circuit: Circuit to modify.
-        qubits: Qubits to prepare. At least two qubits are required.
+        qubits: Qubits on which to prepare the W state.
 
     Raises:
-        ValueError: If fewer than two qubits are specified.
+        ValueError: If fewer than two qubits are provided.
     """
     require_min_qubits(qubits, 2)
+    require_distinct_qubits(qubits)
 
-    n = len(qubits)
+    num_qubits = len(qubits)
 
-    circuit.x(qubits[0])
+    state = np.zeros(2**num_qubits, dtype=complex)
 
-    for i in range(n - 1):
-        theta = 2 * math.acos(1 / math.sqrt(n - i))
+    for qubit in range(num_qubits):
+        state[1 << qubit] = 1 / np.sqrt(num_qubits)
 
-        circuit.ry(-theta, qubits[i + 1])
-        circuit.cz(qubits[i], qubits[i + 1])
-        circuit.ry(theta, qubits[i + 1])
-
-        circuit.cx(qubits[i + 1], qubits[i])
-
-    circuit.x(qubits[-1])
+    circuit.initialize(state, qubits)
 
 def zero_state(
     circuit: QuantumCircuit,

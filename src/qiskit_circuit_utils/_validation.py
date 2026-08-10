@@ -106,17 +106,10 @@ def require_distinct(
     *,
     name: str = "values",
 ) -> None:
-    """Require all elements in a sequence to be distinct.
-
-    Args:
-        values: Sequence to validate.
-        name: Name used in the error message.
-
-    Raises:
-        ValueError: If duplicate elements are present.
-    """
-    if len(set(values)) != len(values):
-        raise ValueError(f"Expected distinct {name}.")
+    """Require all elements in a sequence to be distinct."""
+    for index, value in enumerate(values):
+        if value in values[index + 1:]:
+            raise ValueError(f"Expected distinct {name}.")
 
 # Qubit validation
 
