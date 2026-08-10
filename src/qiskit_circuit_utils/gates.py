@@ -17,21 +17,30 @@ def x_all(
     qubits: Iterable[QubitSpecifier],
 ) -> None:
     """Apply an X gate to each qubit."""
-    circuit.x(list(qubits))
+    qubits = list(qubits)
+
+    if qubits:
+        circuit.x(qubits)
 
 def y_all(
     circuit: QuantumCircuit,
     qubits: Iterable[QubitSpecifier],
 ) -> None:
     """Apply a Y gate to each qubit."""
-    circuit.y(list(qubits))
+    qubits = list(qubits)
+
+    if qubits:
+        circuit.y(qubits)
 
 def z_all(
     circuit: QuantumCircuit,
     qubits: Iterable[QubitSpecifier],
 ) -> None:
     """Apply a Z gate to each qubit."""
-    circuit.z(list(qubits))
+    qubits = list(qubits)
+
+    if qubits:
+        circuit.z(qubits)
 
 # Hadamard
 
@@ -40,7 +49,10 @@ def h_all(
     qubits: Iterable[QubitSpecifier],
 ) -> None:
     """Apply a Hadamard gate to each qubit."""
-    circuit.h(list(qubits))
+    qubits = list(qubits)
+
+    if qubits:
+        circuit.h(qubits)
 
 # Phase gates
 
@@ -49,28 +61,40 @@ def s_all(
     qubits: Iterable[QubitSpecifier],
 ) -> None:
     """Apply an S gate to each qubit."""
-    circuit.s(list(qubits))
+    qubits = list(qubits)
+
+    if qubits:
+        circuit.s(qubits)
 
 def sdg_all(
     circuit: QuantumCircuit,
     qubits: Iterable[QubitSpecifier],
 ) -> None:
     """Apply an S-dagger gate to each qubit."""
-    circuit.sdg(list(qubits))
+    qubits = list(qubits)
+
+    if qubits:
+        circuit.sdg(qubits)
 
 def t_all(
     circuit: QuantumCircuit,
     qubits: Iterable[QubitSpecifier],
 ) -> None:
     """Apply a T gate to each qubit."""
-    circuit.t(list(qubits))
+    qubits = list(qubits)
+
+    if qubits:
+        circuit.t(qubits)
 
 def tdg_all(
     circuit: QuantumCircuit,
     qubits: Iterable[QubitSpecifier],
 ) -> None:
     """Apply a T-dagger gate to each qubit."""
-    circuit.tdg(list(qubits))
+    qubits = list(qubits)
+
+    if qubits:
+        circuit.tdg(qubits)
 
 # Square-root X
 
@@ -79,14 +103,20 @@ def sx_all(
     qubits: Iterable[QubitSpecifier],
 ) -> None:
     """Apply an SX gate to each qubit."""
-    circuit.sx(list(qubits))
+    qubits = list(qubits)
+
+    if qubits:
+        circuit.sx(qubits)
 
 def sxdg_all(
     circuit: QuantumCircuit,
     qubits: Iterable[QubitSpecifier],
 ) -> None:
     """Apply an SX-dagger gate to each qubit."""
-    circuit.sxdg(list(qubits))
+    qubits = list(qubits)
+
+    if qubits:
+        circuit.sxdg(qubits)
 
 # Rotation gates
 
@@ -96,7 +126,10 @@ def rx_all(
     theta: float,
 ) -> None:
     """Apply RX(theta) to each qubit."""
-    circuit.rx(theta, list(qubits))
+    qubits = list(qubits)
+
+    if qubits:
+        circuit.rx(theta, qubits)
 
 def ry_all(
     circuit: QuantumCircuit,
@@ -104,7 +137,10 @@ def ry_all(
     theta: float,
 ) -> None:
     """Apply RY(theta) to each qubit."""
-    circuit.ry(theta, list(qubits))
+    qubits = list(qubits)
+
+    if qubits:
+        circuit.ry(theta, qubits)
 
 def rz_all(
     circuit: QuantumCircuit,
@@ -112,7 +148,10 @@ def rz_all(
     theta: float,
 ) -> None:
     """Apply RZ(theta) to each qubit."""
-    circuit.rz(theta, list(qubits))
+    qubits = list(qubits)
+
+    if qubits:
+        circuit.rz(theta, qubits)
 
 def p_all(
     circuit: QuantumCircuit,
@@ -120,7 +159,10 @@ def p_all(
     theta: float,
 ) -> None:
     """Apply a phase gate P(theta) to each qubit."""
-    circuit.p(theta, list(qubits))
+    qubits = list(qubits)
+
+    if qubits:
+        circuit.p(theta, qubits)
 
 
 # General single-qubit gates
@@ -133,7 +175,10 @@ def u_all(
     lam: float,
 ) -> None:
     """Apply U(theta, phi, lambda) to each qubit."""
-    circuit.u(theta, phi, lam, list(qubits))
+    qubits = list(qubits)
+
+    if qubits:
+        circuit.u(theta, phi, lam, qubits)
 
 # Controlled gates
 
