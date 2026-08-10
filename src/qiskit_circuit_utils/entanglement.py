@@ -6,6 +6,7 @@ from qiskit import QuantumCircuit
 
 from . import correction, measurement, preparation
 from ._types import ClbitSpecifier, QubitSpecifier
+from ._validation import require_clbits, require_min_qubits, require_qubits
 
 
 def swap(
@@ -31,17 +32,8 @@ def swap(
         ValueError: If exactly three qubits and two classical bits
             are not provided.
     """
-    if len(qubits) != 3:
-        raise ValueError(
-            f"Entanglement swapping requires exactly 3 qubits, "
-            f"got {len(qubits)}."
-        )
-
-    if len(clbits) != 2:
-        raise ValueError(
-            f"Entanglement swapping requires exactly 2 classical bits, "
-            f"got {len(clbits)}."
-        )
+    require_qubits(qubits, 3)
+    require_clbits(clbits, 2)
 
     alice, ancillary, bob = qubits
     phase_bit, parity_bit = clbits
@@ -82,17 +74,8 @@ def teleport(
         ValueError: If exactly three qubits and two classical bits
             are not provided.
     """
-    if len(qubits) != 3:
-        raise ValueError(
-            f"Teleportation requires exactly 3 qubits, "
-            f"got {len(qubits)}."
-        )
-
-    if len(clbits) != 2:
-        raise ValueError(
-            f"Teleportation requires exactly 2 classical bits, "
-            f"got {len(clbits)}."
-        )
+    require_qubits(qubits, 3)
+    require_clbits(clbits, 2)
 
     source, ancillary, target = qubits
     phase_bit, parity_bit = clbits
@@ -132,11 +115,7 @@ def distribute(
     Raises:
         ValueError: If fewer than two qubits are provided.
     """
-    if len(qubits) < 2:
-        raise ValueError(
-            f"Entanglement distribution requires at least 2 qubits, "
-            f"got {len(qubits)}."
-        )
+    require_min_qubits(qubits, 2)
 
     source, *targets = qubits
 
@@ -184,11 +163,7 @@ def connect(
     Raises:
         ValueError: If exactly two qubits are not provided.
     """
-    if len(qubits) != 2:
-        raise ValueError(
-            f"Entanglement connection requires exactly 2 qubits, "
-            f"got {len(qubits)}."
-        )
+    require_qubits(qubits, 2)
 
     source, target = qubits
     circuit.cx(source, target)
@@ -212,11 +187,7 @@ def disconnect(
     Raises:
         ValueError: If exactly two qubits are not provided.
     """
-    if len(qubits) != 2:
-        raise ValueError(
-            f"Entanglement disconnection requires exactly 2 qubits, "
-            f"got {len(qubits)}."
-        )
+    require_qubits(qubits, 2)
 
     source, target = qubits
     circuit.cx(source, target)
@@ -240,11 +211,7 @@ def transfer(
     Raises:
         ValueError: If exactly two qubits are not provided.
     """
-    if len(qubits) != 2:
-        raise ValueError(
-            f"State transfer requires exactly 2 qubits, "
-            f"got {len(qubits)}."
-        )
+    require_qubits(qubits, 2)
 
     source, target = qubits
     circuit.swap(source, target)

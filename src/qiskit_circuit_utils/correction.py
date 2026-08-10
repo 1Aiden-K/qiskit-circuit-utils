@@ -5,6 +5,7 @@ from collections.abc import Sequence
 from qiskit import QuantumCircuit
 
 from ._types import ClbitSpecifier, QubitSpecifier
+from ._validation import require_same_length
 
 
 def x_if(
@@ -79,14 +80,14 @@ def x_if_all(
     Raises:
         ValueError: If the numbers of targets and control bits differ.
     """
-    if len(targets) != len(control_bits):
-        raise ValueError(
-            f"Expected equal numbers of targets and classical bits, "
-            f"got {len(targets)} and {len(control_bits)}."
-        )
+    require_same_length(
+        targets,
+        control_bits,
+        names=("targets", "classical bits"),
+    )
 
     for target, control_bit in zip(targets, control_bits):
-        x(circuit, target, control_bit)
+        x_if(circuit, target, control_bit)
 
 
 def z_if_all(
@@ -104,14 +105,14 @@ def z_if_all(
     Raises:
         ValueError: If the numbers of targets and control bits differ.
     """
-    if len(targets) != len(control_bits):
-        raise ValueError(
-            f"Expected equal numbers of targets and classical bits, "
-            f"got {len(targets)} and {len(control_bits)}."
-        )
+    require_same_length(
+        targets,
+        control_bits,
+        names=("targets", "classical bits"),
+    )
 
     for target, control_bit in zip(targets, control_bits):
-        z(circuit, target, control_bit)
+        z_if(circuit, target, control_bit)
 
 
 def pauli_all(
@@ -131,11 +132,12 @@ def pauli_all(
     Raises:
         ValueError: If the input sequences have different lengths.
     """
-    if not (len(targets) == len(x_bits) == len(z_bits)):
-        raise ValueError(
-            "Expected equal numbers of targets, X bits, and Z bits, "
-            f"got {len(targets)}, {len(x_bits)}, and {len(z_bits)}."
-        )
+    require_same_length(
+        targets,
+        x_bits,
+        z_bits,
+        names=("targets", "X bits", "Z bits"),
+    )
 
     for target, x_bit, z_bit in zip(targets, x_bits, z_bits):
         pauli(

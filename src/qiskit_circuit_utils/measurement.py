@@ -12,6 +12,7 @@ from ._types import (
     PauliBasis,
     QubitSpecifier,
 )
+from ._validation import require_clbits, require_qubits, require_same_length
 
 # Computational / Z-basis measurement
 
@@ -34,11 +35,11 @@ def z_all(
     clbits: Sequence[ClbitSpecifier],
 ) -> None:
     """Measure each qubit in the Z basis."""
-    if len(qubits) != len(clbits):
-        raise ValueError(
-            f"Expected equal numbers of qubits and classical bits, "
-            f"got {len(qubits)} and {len(clbits)}."
-        )
+    require_same_length(
+        qubits,
+        clbits,
+        names=("qubits", "classical bits"),
+    )
 
     circuit.measure(qubits, clbits)
 
@@ -64,11 +65,11 @@ def x_all(
     clbits: Sequence[ClbitSpecifier],
 ) -> None:
     """Measure each qubit in the X basis."""
-    if len(qubits) != len(clbits):
-        raise ValueError(
-            f"Expected equal numbers of qubits and classical bits, "
-            f"got {len(qubits)} and {len(clbits)}."
-        )
+    require_same_length(
+        qubits,
+        clbits,
+        names=("qubits", "classical bits"),
+    )
 
     circuit.h(qubits)
     circuit.measure(qubits, clbits)
@@ -96,11 +97,11 @@ def y_all(
     clbits: Sequence[ClbitSpecifier],
 ) -> None:
     """Measure each qubit in the Y basis."""
-    if len(qubits) != len(clbits):
-        raise ValueError(
-            f"Expected equal numbers of qubits and classical bits, "
-            f"got {len(qubits)} and {len(clbits)}."
-        )
+    require_same_length(
+        qubits,
+        clbits,
+        names=("qubits", "classical bits"),
+    )
 
     circuit.sdg(qubits)
     circuit.h(qubits)
@@ -166,17 +167,8 @@ def bell_basis(
     Raises:
         ValueError: If exactly two qubits and classical bits are not provided.
     """
-    if len(qubits) != 2:
-        raise ValueError(
-            f"Bell-basis measurement requires exactly 2 qubits, "
-            f"got {len(qubits)}."
-        )
-
-    if len(clbits) != 2:
-        raise ValueError(
-            f"Bell-basis measurement requires exactly 2 classical bits, "
-            f"got {len(clbits)}."
-        )
+    require_qubits(qubits, 2)
+    require_clbits(clbits, 2)
 
     q0, q1 = qubits
 

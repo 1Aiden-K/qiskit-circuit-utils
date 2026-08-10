@@ -14,6 +14,14 @@ from ._types import (
     Eigenvalue,
     QubitSpecifier,
 )
+from ._validation import (
+    require_clbits,
+    require_length,
+    require_min_qubits,
+    require_non_empty,
+    require_qubits,
+    require_same_length,
+)
 
 def bell_state(
     circuit: QuantumCircuit,
@@ -37,10 +45,7 @@ def bell_state(
             ValueError: If an unsupported Bell state is specified.
             ValueError: If more or less than two qubits are specified.
     """
-    if len(qubits) != 2:
-        raise ValueError(
-            f"Bell state requires exactly 2 qubits, got {len(qubits)}."
-        )
+    require_qubits(qubits, 2)
 
     q0, q1 = qubits
 
@@ -72,10 +77,7 @@ def ghz_state(
     Raises:
         ValueError: If fewer than two qubits are specified.
     """
-    if len(qubits) < 2:
-        raise ValueError(
-            f"GHZ state requires at least 2 qubits, got {len(qubits)}."
-        )
+    require_min_qubits(qubits, 2)
 
     circuit.h(qubits[0])
 
@@ -97,10 +99,7 @@ def w_state(
     Raises:
         ValueError: If fewer than two qubits are specified.
     """
-    if len(qubits) < 2:
-        raise ValueError(
-            f"W state requires at least 2 qubits, got {len(qubits)}."
-        )
+    require_min_qubits(qubits, 2)
 
     n = len(qubits)
 
@@ -185,10 +184,11 @@ def basis_state(
         ValueError: If the bit string length does not match the number
             of qubits or contains characters other than "0" and "1".
     """
-    if len(state) != len(qubits):
-        raise ValueError(
-            f"State requires {len(state)} qubits, got {len(qubits)}."
-        )
+    require_same_length(
+        state,
+        qubits,
+        names=("state", "qubits"),
+    )
 
     if any(bit not in "01" for bit in state):
         raise ValueError("State must contain only '0' and '1'.")
@@ -231,11 +231,11 @@ def statevector(
     """
     expected_size = 2 ** len(qubits)
 
-    if len(statevector) != expected_size:
-        raise ValueError(
-            f"Statevector must contain {expected_size} amplitudes, "
-            f"got {len(statevector)}."
-        )
+    require_length(
+        statevector,
+        expected_size,
+        name="statevector",
+    )
 
     circuit.initialize(statevector, qubits)
 
@@ -258,16 +258,14 @@ def product_state(
         ValueError: If the number of states does not match the number
             of qubits or a state does not contain exactly two amplitudes.
     """
-    if len(states) != len(qubits):
-        raise ValueError(
-            f"Expected {len(qubits)} states, got {len(states)}."
-        )
+    require_same_length(
+        states,
+        qubits,
+        names=("states", "qubits"),
+    )
 
     for qubit, state in zip(qubits, states):
-        if len(state) != 2:
-            raise ValueError(
-                "Each single-qubit state must contain exactly 2 amplitudes."
-            )
+        require_length(state, 2, name="single-qubit state")
 
         circuit.initialize(state, [qubit])
 
@@ -283,8 +281,7 @@ def random_state(
         qubits: Qubits on which to prepare the state.
         seed: Optional random seed for reproducibility.
     """
-    if not qubits:
-        raise ValueError("At least one qubit is required.")
+    require_non_empty(qubits, name="qubits")
 
     state = random_statevector(2 ** len(qubits), seed=seed)
 
