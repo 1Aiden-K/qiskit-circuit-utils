@@ -1,10 +1,8 @@
 """Utilities for adding non-basic measurements to quantum circuits."""
 
 from collections.abc import Iterable, Sequence
-from typing import TypeAlias
 
 from qiskit import QuantumCircuit
-from qiskit.circuit import Clbit, Qubit
 
 from ._types import (
     ClbitSpecifier,

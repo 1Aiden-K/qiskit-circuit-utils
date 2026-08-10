@@ -2,9 +2,7 @@
 
 import math
 from collections.abc import Sequence
-from typing import Literal
 
-import numpy as np
 from qiskit import QuantumCircuit
 from qiskit.circuit import Qubit
 from qiskit.quantum_info import random_statevector
@@ -15,7 +13,6 @@ from ._types import (
     QubitSpecifier,
 )
 from ._validation import (
-    require_clbits,
     require_length,
     require_min_qubits,
     require_non_empty,

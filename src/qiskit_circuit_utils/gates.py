@@ -1,10 +1,8 @@
 """Utilities for applying gates across collections of qubits."""
 
 from collections.abc import Iterable
-from typing import TypeAlias
 
 from qiskit import QuantumCircuit
-from qiskit.circuit import Qubit
 
 from ._types import (
     QubitPair,
