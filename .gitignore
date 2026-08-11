@@ -9,5 +9,5 @@ wheels/
 .pytest_cache/
 
 # Virtual environments
-.venv/
+.venv*
 venv/
