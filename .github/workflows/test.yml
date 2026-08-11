@@ -5,6 +5,28 @@ on:
   pull_request:
 
 jobs:
+  minimum-dependencies:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Install Python
+        run: uv python install 3.11
+
+      - name: Create virtual environment
+        run: uv venv --python 3.11
+
+      - name: Install minimum dependencies
+        run: |
+          uv pip install -e . "numpy==2.0.0" "qiskit==2.0.0" pytest
+
+      - name: Run tests
+        run: .venv/bin/pytest
   test:
     runs-on: ubuntu-latest
 
