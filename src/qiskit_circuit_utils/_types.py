@@ -1,7 +1,9 @@
 """Shared type definitions for qiskit_circuit_utils."""
 
+from collections.abc import Sequence
 from typing import Literal, TypeAlias
 
+from numpy.typing import NDArray
 from qiskit.circuit import Clbit, Qubit
 
 # Qubit and classical-bit specifiers
@@ -63,3 +65,6 @@ Eigenvalue: TypeAlias = Literal[
 
 BinaryValue: TypeAlias = Literal[0, 1]
 """More explicit 1 or 0"""
+
+StatevectorLike: TypeAlias = Sequence[complex] | NDArray
+"""NDArray being a more natural way for statevectors"""

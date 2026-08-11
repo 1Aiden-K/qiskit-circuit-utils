@@ -168,19 +168,19 @@ def pauli(
     Raises:
         ValueError: If the basis is unsupported.
     """
-    basis = basis.upper()
+    normalized_basis = basis.upper()
 
     require_choice(
-        basis,
+        normalized_basis,
         ("X", "Y", "Z"),
         name="basis",
     )
 
-    if basis == "X":
+    if normalized_basis == "X":
         x(circuit, qubit, clbit)
-    elif basis == "Y":
+    elif normalized_basis == "Y":
         y(circuit, qubit, clbit)
-    else:
+    elif normalized_basis == "Z":
         z(circuit, qubit, clbit)
 
 

@@ -457,6 +457,8 @@ def test_bell_basis_transform(
     # Bell-to-computational-basis transformation.
     transformed = circuit.remove_final_measurements(inplace=False)
 
+    assert transformed is not None
+
     actual = Statevector.from_instruction(transformed)
 
     assert actual.equiv(Statevector.from_label(expected))

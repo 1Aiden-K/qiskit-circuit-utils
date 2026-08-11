@@ -1,6 +1,6 @@
 """Internal validation utilities."""
 
-from collections.abc import Sequence
+from collections.abc import Sequence, Sized
 from typing import TypeVar
 
 from ._types import ClbitSpecifier, QubitSpecifier
@@ -9,7 +9,7 @@ T = TypeVar("T")
 
 
 def require_length(
-    values: Sequence[T],
+    values: Sized,
     count: int,
     *,
     name: str = "values",
@@ -24,10 +24,8 @@ def require_length(
     Raises:
         ValueError: If the sequence does not have the required length.
     """
-    actual = len(values)
-
-    if actual != count:
-        raise ValueError(f"Expected exactly {count} {name}, got {actual}.")
+    if len(values) != count:
+        raise ValueError(f"Expected exactly {count} {name}, got {len(values)}.")
 
 
 def require_min_length(

@@ -625,10 +625,10 @@ def test_superdense_code_instructions(
 @pytest.mark.parametrize(
     "message",
     [
-        [False, False],
-        [False, True],
-        [True, False],
-        [True, True],
+        (0, 0),
+        (0, 1),
+        (1, 0),
+        (1, 1),
     ],
 )
 def test_superdense_code_decodes_message(message):
@@ -641,9 +641,11 @@ def test_superdense_code_decodes_message(message):
         message,
     )
 
-    result = Statevector.from_instruction(
-        circuit.remove_final_measurements(inplace=False)
-    )
+    transformed = circuit.remove_final_measurements(inplace=False)
+
+    assert transformed is not None
+
+    result = Statevector.from_instruction(transformed)
 
     phase_bit, parity_bit = message
     expected = Statevector.from_label(f"{int(parity_bit)}{int(phase_bit)}")
@@ -659,7 +661,7 @@ def test_superdense_code_requires_two_qubits():
             circuit,
             circuit.qubits,
             circuit.clbits,
-            [False, False],
+            (0, 0),
         )
 
 
@@ -671,7 +673,7 @@ def test_superdense_code_requires_distinct_qubits():
             circuit,
             [circuit.qubits[0], circuit.qubits[0]],
             circuit.clbits,
-            [False, False],
+            (0, 0),
         )
 
 
@@ -683,7 +685,7 @@ def test_superdense_code_requires_two_clbits():
             circuit,
             circuit.qubits,
             circuit.clbits,
-            [False, False],
+            (0, 0),
         )
 
 
@@ -695,7 +697,7 @@ def test_superdense_code_requires_distinct_clbits():
             circuit,
             circuit.qubits,
             [circuit.clbits[0], circuit.clbits[0]],
-            [False, False],
+            (0, 0),
         )
 
 
@@ -703,8 +705,8 @@ def test_superdense_code_requires_distinct_clbits():
     "message",
     [
         [],
-        [False],
-        [False, False, False],
+        [0],
+        [0, 0, 0],
     ],
 )
 def test_superdense_code_requires_two_message_bits(message):

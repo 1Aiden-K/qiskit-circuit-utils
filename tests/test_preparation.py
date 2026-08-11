@@ -8,17 +8,17 @@ from qiskit import QuantumCircuit
 from qiskit.quantum_info import Statevector
 
 from qiskit_circuit_utils import preparation
+from qiskit_circuit_utils._types import StatevectorLike
 
 
 def assert_state_equivalent(
     circuit: QuantumCircuit,
-    expected: Statevector | list[complex],
+    expected: Statevector | StatevectorLike,
 ) -> None:
-    """Assert that a circuit produces the expected state."""
     actual = Statevector.from_instruction(circuit)
 
     if not isinstance(expected, Statevector):
-        expected = Statevector(expected)
+        expected = Statevector(list(expected))
 
     assert actual.equiv(expected)
 

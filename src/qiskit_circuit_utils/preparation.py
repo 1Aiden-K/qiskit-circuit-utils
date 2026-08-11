@@ -11,6 +11,7 @@ from ._types import (
     BellState,
     Eigenvalue,
     QubitSpecifier,
+    StatevectorLike,
 )
 from ._validation import (
     require_choice,
@@ -120,7 +121,7 @@ def w_state(
     for qubit in range(num_qubits):
         state[1 << qubit] = 1 / np.sqrt(num_qubits)
 
-    circuit.initialize(state, qubits)
+    circuit.initialize(state.tolist(), qubits)
 
 
 def zero_state(
@@ -259,7 +260,7 @@ def uniform_superposition(
 def statevector(
     circuit: QuantumCircuit,
     qubits: Sequence[QubitSpecifier],
-    statevector: Sequence[complex],
+    statevector: StatevectorLike,
 ) -> None:
     """Prepare an arbitrary statevector on the specified qubits.
 
@@ -281,7 +282,7 @@ def statevector(
         name="statevector",
     )
 
-    circuit.initialize(statevector, qubits)
+    circuit.initialize(list(statevector), qubits)
 
 
 def product_state(
@@ -344,8 +345,7 @@ def random_state(
     require_distinct_qubits(qubits)
 
     state = random_statevector(2 ** len(qubits), seed=seed)
-
-    circuit.initialize(state.data, qubits)
+    circuit.initialize(state, qubits)
 
 
 def x_eigenstate(
