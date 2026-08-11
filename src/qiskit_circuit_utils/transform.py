@@ -48,6 +48,7 @@ def qft(
     if swaps:
         operation.reverse(circuit, qubits)
 
+
 def inverse_qft(
     circuit: QuantumCircuit,
     qubits: Sequence[QubitSpecifier],

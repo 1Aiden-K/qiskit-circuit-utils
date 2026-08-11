@@ -5,11 +5,9 @@ from qiskit import QuantumCircuit
 
 from qiskit_circuit_utils import operation
 
+
 def instruction_names(circuit):
-    return [
-        instruction.operation.name
-        for instruction in circuit.data
-    ]
+    return [instruction.operation.name for instruction in circuit.data]
 
 
 # ---------------------------------------------------------------------------

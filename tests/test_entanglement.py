@@ -9,7 +9,6 @@ from qiskit.quantum_info import Statevector
 
 from qiskit_circuit_utils import entanglement, preparation
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -32,10 +31,7 @@ def instruction_names(
     circuit: QuantumCircuit,
 ) -> list[str]:
     """Return the top-level instruction names in a circuit."""
-    return [
-        instruction.operation.name
-        for instruction in circuit.data
-    ]
+    return [instruction.operation.name for instruction in circuit.data]
 
 
 # ---------------------------------------------------------------------------
@@ -301,12 +297,14 @@ def test_disconnect_bell_state():
         circuit.qubits,
     )
 
-    expected = Statevector([
-        1 / math.sqrt(2),
-        1 / math.sqrt(2),
-        0,
-        0,
-    ])
+    expected = Statevector(
+        [
+            1 / math.sqrt(2),
+            1 / math.sqrt(2),
+            0,
+            0,
+        ]
+    )
 
     assert_state_equivalent(
         circuit,
@@ -360,13 +358,16 @@ def test_transfer_arbitrary_state():
         phi,
     )
 
-    source_state = Statevector([
-        math.cos(theta / 2),
-        complex(
-            math.cos(phi),
-            math.sin(phi),
-        ) * math.sin(theta / 2),
-    ])
+    source_state = Statevector(
+        [
+            math.cos(theta / 2),
+            complex(
+                math.cos(phi),
+                math.sin(phi),
+            )
+            * math.sin(theta / 2),
+        ]
+    )
 
     entanglement.transfer(
         circuit,
@@ -374,9 +375,7 @@ def test_transfer_arbitrary_state():
     )
 
     # q0 becomes |0>; q1 receives the original q0 state.
-    expected = source_state.tensor(
-        Statevector.from_label("0")
-    )
+    expected = source_state.tensor(Statevector.from_label("0"))
 
     assert_state_equivalent(
         circuit,
@@ -470,19 +469,9 @@ def test_teleport_corrections():
         1,
     )
 
-    assert (
-        x_correction.blocks[0]
-        .data[0]
-        .operation.name
-        == "x"
-    )
+    assert x_correction.blocks[0].data[0].operation.name == "x"
 
-    assert (
-        z_correction.blocks[0]
-        .data[0]
-        .operation.name
-        == "z"
-    )
+    assert z_correction.blocks[0].data[0].operation.name == "z"
 
 
 def test_teleport_requires_three_qubits():
@@ -566,19 +555,9 @@ def test_swap_corrections():
         1,
     )
 
-    assert (
-        x_correction.blocks[0]
-        .data[0]
-        .operation.name
-        == "x"
-    )
+    assert x_correction.blocks[0].data[0].operation.name == "x"
 
-    assert (
-        z_correction.blocks[0]
-        .data[0]
-        .operation.name
-        == "z"
-    )
+    assert z_correction.blocks[0].data[0].operation.name == "z"
 
 
 def test_swap_requires_three_qubits():
@@ -601,6 +580,7 @@ def test_swap_requires_two_clbits():
             circuit.qubits,
             circuit.clbits,
         )
+
 
 # ---------------------------------------------------------------------------
 # Superdense coding
@@ -666,9 +646,7 @@ def test_superdense_code_decodes_message(message):
     )
 
     phase_bit, parity_bit = message
-    expected = Statevector.from_label(
-        f"{int(parity_bit)}{int(phase_bit)}"
-    )
+    expected = Statevector.from_label(f"{int(parity_bit)}{int(phase_bit)}")
 
     assert result.equiv(expected)
 

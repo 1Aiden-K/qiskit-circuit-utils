@@ -7,7 +7,6 @@ from qiskit.circuit.controlflow import IfElseOp
 
 from qiskit_circuit_utils import correction
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -35,9 +34,7 @@ def assert_conditional_gate(
 
     assert gate_instruction.operation.name == gate
     assert gate_instruction.qubits == (
-        true_body.qubits[
-            circuit.find_bit(target).index
-        ],
+        true_body.qubits[circuit.find_bit(target).index],
     )
 
 
@@ -177,19 +174,9 @@ def test_pauli():
         1,
     )
 
-    assert (
-        x_operation.blocks[0]
-        .data[0]
-        .operation.name
-        == "x"
-    )
+    assert x_operation.blocks[0].data[0].operation.name == "x"
 
-    assert (
-        z_operation.blocks[0]
-        .data[0]
-        .operation.name
-        == "z"
-    )
+    assert z_operation.blocks[0].data[0].operation.name == "z"
 
 
 def test_pauli_accepts_integer_specifiers():
@@ -242,12 +229,7 @@ def test_x_all():
             1,
         )
 
-        assert (
-            operation.blocks[0]
-            .data[0]
-            .operation.name
-            == "x"
-        )
+        assert operation.blocks[0].data[0].operation.name == "x"
 
 
 def test_x_all_rejects_mismatched_lengths():
@@ -287,12 +269,7 @@ def test_z_all():
             1,
         )
 
-        assert (
-            operation.blocks[0]
-            .data[0]
-            .operation.name
-            == "z"
-        )
+        assert operation.blocks[0].data[0].operation.name == "z"
 
 
 def test_z_all_rejects_mismatched_lengths():
@@ -354,19 +331,9 @@ def test_pauli_all():
             1,
         )
 
-        assert (
-            x_operation.blocks[0]
-            .data[0]
-            .operation.name
-            == "x"
-        )
+        assert x_operation.blocks[0].data[0].operation.name == "x"
 
-        assert (
-            z_operation.blocks[0]
-            .data[0]
-            .operation.name
-            == "z"
-        )
+        assert z_operation.blocks[0].data[0].operation.name == "z"
 
 
 @pytest.mark.parametrize(

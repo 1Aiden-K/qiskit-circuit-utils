@@ -24,10 +24,10 @@ def require_length(
     Raises:
         ValueError: If the sequence does not have the required length.
     """
-    if len(values) != count:
-        raise ValueError(
-            f"Expected exactly {count} {name}, got {len(values)}."
-        )
+    actual = len(values)
+
+    if actual != count:
+        raise ValueError(f"Expected exactly {count} {name}, got {actual}.")
 
 
 def require_min_length(
@@ -47,9 +47,7 @@ def require_min_length(
         ValueError: If the sequence contains too few elements.
     """
     if len(values) < minimum:
-        raise ValueError(
-            f"Expected at least {minimum} {name}, got {len(values)}."
-        )
+        raise ValueError(f"Expected at least {minimum} {name}, got {len(values)}.")
 
 
 def require_same_length(
@@ -76,16 +74,11 @@ def require_same_length(
     if names is not None:
         require_length(names, len(sequences), name="names")
 
-        details = ", ".join(
-            f"{name}={length}"
-            for name, length in zip(names, lengths)
-        )
+        details = ", ".join(f"{name}={length}" for name, length in zip(names, lengths))
     else:
         details = ", ".join(map(str, lengths))
 
-    raise ValueError(
-        f"Expected sequences of equal length, got {details}."
-    )
+    raise ValueError(f"Expected sequences of equal length, got {details}.")
 
 
 def require_non_empty(
@@ -121,7 +114,7 @@ def require_distinct(
         ValueError: If the sequence contains duplicate elements.
     """
     for index, value in enumerate(values):
-        if value in values[index + 1:]:
+        if value in values[index + 1 :]:
             raise ValueError(f"Expected distinct {name}.")
 
 
@@ -143,9 +136,7 @@ def require_choice(
     """
     if value not in choices:
         choices_text = ", ".join(repr(choice) for choice in choices)
-        raise ValueError(
-            f"Expected {name} to be one of {choices_text}, got {value!r}."
-        )
+        raise ValueError(f"Expected {name} to be one of {choices_text}, got {value!r}.")
 
 
 # Qubit validation
@@ -190,26 +181,3 @@ def require_distinct_clbits(
 ) -> None:
     """Require all specified classical bits to be distinct."""
     require_distinct(clbits, name="classical bits")
-
-def require_length(
-    values: Sequence[T],
-    count: int,
-    *,
-    name: str = "values",
-) -> None:
-    """Require a sequence to contain exactly ``count`` elements.
-
-    Args:
-        values: Sequence to validate.
-        count: Required number of elements.
-        name: Name used in the error message.
-
-    Raises:
-        ValueError: If the sequence does not have the required length.
-    """
-    actual = len(values)
-
-    if actual != count:
-        raise ValueError(
-            f"Expected exactly {count} {name}, got {actual}."
-        )

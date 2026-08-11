@@ -46,8 +46,12 @@ BellState: TypeAlias = Literal[
 """One of the four Bell states."""
 
 PauliBasis: TypeAlias = Literal[
-    "X", "Y", "Z",
-    "x", "y", "z",
+    "X",
+    "Y",
+    "Z",
+    "x",
+    "y",
+    "z",
 ]
 """A Pauli measurement basis."""
 

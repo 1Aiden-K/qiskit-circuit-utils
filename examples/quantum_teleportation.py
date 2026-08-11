@@ -5,15 +5,15 @@ from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
 from qiskit_circuit_utils import correction, measurement, preparation
 
 if __name__ == "__main__":
-        # Teleport q[0] to q[2].
+    # Teleport q[0] to q[2].
     qr = QuantumRegister(3, "q")
     cr = ClassicalRegister(2, "c")
 
-    source=qr[0]
-    ancillary=qr[1]
-    target=qr[2]
-    phase_bit=cr[0]
-    parity_bit=cr[1]
+    source = qr[0]
+    ancillary = qr[1]
+    target = qr[2]
+    phase_bit = cr[0]
+    parity_bit = cr[1]
 
     circuit = QuantumCircuit(qr, cr)
 

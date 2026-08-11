@@ -1,13 +1,10 @@
 """Tests for qiskit_circuit_utils.measurement."""
 
-import math
-
 import pytest
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import Statevector
 
 from qiskit_circuit_utils import measurement, preparation
-
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -18,10 +15,7 @@ def instruction_names(
     circuit: QuantumCircuit,
 ) -> list[str]:
     """Return the instruction names in a circuit."""
-    return [
-        instruction.operation.name
-        for instruction in circuit.data
-    ]
+    return [instruction.operation.name for instruction in circuit.data]
 
 
 # ---------------------------------------------------------------------------
@@ -355,13 +349,9 @@ def test_z_maps_correct_qubit_to_clbit():
 
     instruction = circuit.data[-1]
 
-    assert instruction.qubits == (
-        circuit.qubits[2],
-    )
+    assert instruction.qubits == (circuit.qubits[2],)
 
-    assert instruction.clbits == (
-        circuit.clbits[1],
-    )
+    assert instruction.clbits == (circuit.clbits[1],)
 
 
 def test_z_all_preserves_mapping_order():
@@ -385,19 +375,11 @@ def test_z_all_preserves_mapping_order():
         if instruction.operation.name == "measure"
     ]
 
-    assert measurements[0].qubits == (
-        circuit.qubits[2],
-    )
-    assert measurements[0].clbits == (
-        circuit.clbits[0],
-    )
+    assert measurements[0].qubits == (circuit.qubits[2],)
+    assert measurements[0].clbits == (circuit.clbits[0],)
 
-    assert measurements[1].qubits == (
-        circuit.qubits[0],
-    )
-    assert measurements[1].clbits == (
-        circuit.clbits[2],
-    )
+    assert measurements[1].qubits == (circuit.qubits[0],)
+    assert measurements[1].clbits == (circuit.clbits[2],)
 
 
 # ---------------------------------------------------------------------------
@@ -473,12 +455,8 @@ def test_bell_basis_transform(
 
     # Remove final measurements so Statevector can inspect the
     # Bell-to-computational-basis transformation.
-    transformed = circuit.remove_final_measurements(
-        inplace=False
-    )
+    transformed = circuit.remove_final_measurements(inplace=False)
 
     actual = Statevector.from_instruction(transformed)
 
-    assert actual.equiv(
-        Statevector.from_label(expected)
-    )
+    assert actual.equiv(Statevector.from_label(expected))

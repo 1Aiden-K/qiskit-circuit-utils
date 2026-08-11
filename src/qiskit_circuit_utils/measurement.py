@@ -19,7 +19,6 @@ from ._validation import (
     require_same_length,
 )
 
-
 # Computational / Z-basis measurement
 
 

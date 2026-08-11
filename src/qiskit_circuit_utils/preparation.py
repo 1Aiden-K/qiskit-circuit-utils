@@ -1,6 +1,7 @@
 """Utilities for preparing states across qubits."""
 
 from collections.abc import Sequence
+from itertools import pairwise
 
 import numpy as np
 from qiskit import QuantumCircuit
@@ -14,10 +15,10 @@ from ._types import (
 from ._validation import (
     require_choice,
     require_distinct_qubits,
+    require_length,
     require_min_qubits,
     require_non_empty,
     require_qubits,
-    require_length,
     require_same_length,
 )
 
@@ -87,7 +88,7 @@ def ghz_state(
 
     circuit.h(qubits[0])
 
-    for control, target in zip(qubits, qubits[1:]):
+    for control, target in pairwise(qubits):
         circuit.cx(control, target)
 
 

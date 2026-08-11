@@ -46,10 +46,7 @@ def test_bell_state(bell_state, expected):
         state=bell_state,
     )
 
-    expected = [
-        amplitude / math.sqrt(2)
-        for amplitude in expected
-    ]
+    expected = [amplitude / math.sqrt(2) for amplitude in expected]
 
     assert_state_equivalent(circuit, expected)
 
@@ -279,10 +276,7 @@ def test_uniform_superposition(num_qubits):
 
     amplitude = 1 / math.sqrt(2**num_qubits)
 
-    expected = [
-        amplitude
-        for _ in range(2**num_qubits)
-    ]
+    expected = [amplitude for _ in range(2**num_qubits)]
 
     assert_state_equivalent(circuit, expected)
 
@@ -345,11 +339,9 @@ def test_product_state():
         circuit.qubits,
         [plus, one],
     )
-    
+
     # Qiskit's tensor ordering means q1 is the left-hand factor.
-    expected = Statevector(one).tensor(
-        Statevector(plus)
-    )
+    expected = Statevector(one).tensor(Statevector(plus))
 
     assert_state_equivalent(circuit, expected)
 

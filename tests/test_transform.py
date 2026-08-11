@@ -4,17 +4,14 @@ from math import pi
 
 import pytest
 from qiskit import QuantumCircuit
-from qiskit.quantum_info import Operator
 from qiskit.circuit.library import QFTGate
+from qiskit.quantum_info import Operator
 
 from qiskit_circuit_utils import transform
 
 
 def instruction_names(circuit):
-    return [
-        instruction.operation.name
-        for instruction in circuit.data
-    ]
+    return [instruction.operation.name for instruction in circuit.data]
 
 
 # ---------------------------------------------------------------------------
@@ -348,6 +345,4 @@ def test_qft_matches_qiskit(num_qubits):
         expected.qubits,
     )
 
-    assert Operator(circuit).equiv(
-        Operator(expected)
-    )
+    assert Operator(circuit).equiv(Operator(expected))

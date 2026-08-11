@@ -5,15 +5,15 @@ from collections.abc import Sequence
 from qiskit import QuantumCircuit
 
 from . import correction, measurement, preparation
-from ._types import ClbitSpecifier, QubitSpecifier, BinaryValue
+from ._types import BinaryValue, ClbitSpecifier, QubitSpecifier
 from ._validation import (
+    require_choice,
     require_clbits,
     require_distinct_clbits,
     require_distinct_qubits,
+    require_length,
     require_min_qubits,
     require_qubits,
-    require_choice,
-    require_length,
 )
 
 
