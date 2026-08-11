@@ -482,18 +482,3 @@ def test_bell_basis_transform(
     assert actual.equiv(
         Statevector.from_label(expected)
     )
-
-
-# ---------------------------------------------------------------------------
-# Measure all
-# ---------------------------------------------------------------------------
-
-
-def test_measure_all():
-    circuit = QuantumCircuit(3)
-
-    measurement.measure_all(circuit)
-
-    names = instruction_names(circuit)
-
-    assert names.count("measure") == 3

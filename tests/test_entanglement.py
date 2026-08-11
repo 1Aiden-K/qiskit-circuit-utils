@@ -601,3 +601,141 @@ def test_swap_requires_two_clbits():
             circuit.qubits,
             circuit.clbits,
         )
+
+# ---------------------------------------------------------------------------
+# Superdense coding
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    ("message", "encoding"),
+    [
+        ([False, False], []),
+        ([False, True], ["x"]),
+        ([True, False], ["z"]),
+        ([True, True], ["x", "z"]),
+    ],
+)
+def test_superdense_code_instructions(
+    message,
+    encoding,
+):
+    circuit = QuantumCircuit(2, 2)
+
+    entanglement.superdense_code(
+        circuit,
+        circuit.qubits,
+        circuit.clbits,
+        message,
+    )
+
+    names = instruction_names(circuit)
+
+    assert names == [
+        "h",
+        "cx",
+        *encoding,
+        "cx",
+        "h",
+        "measure",
+        "measure",
+    ]
+
+
+@pytest.mark.parametrize(
+    "message",
+    [
+        [False, False],
+        [False, True],
+        [True, False],
+        [True, True],
+    ],
+)
+def test_superdense_code_decodes_message(message):
+    circuit = QuantumCircuit(2, 2)
+
+    entanglement.superdense_code(
+        circuit,
+        circuit.qubits,
+        circuit.clbits,
+        message,
+    )
+
+    result = Statevector.from_instruction(
+        circuit.remove_final_measurements(inplace=False)
+    )
+
+    phase_bit, parity_bit = message
+    expected = Statevector.from_label(
+        f"{int(parity_bit)}{int(phase_bit)}"
+    )
+
+    assert result.equiv(expected)
+
+
+def test_superdense_code_requires_two_qubits():
+    circuit = QuantumCircuit(1, 2)
+
+    with pytest.raises(ValueError):
+        entanglement.superdense_code(
+            circuit,
+            circuit.qubits,
+            circuit.clbits,
+            [False, False],
+        )
+
+
+def test_superdense_code_requires_distinct_qubits():
+    circuit = QuantumCircuit(2, 2)
+
+    with pytest.raises(ValueError):
+        entanglement.superdense_code(
+            circuit,
+            [circuit.qubits[0], circuit.qubits[0]],
+            circuit.clbits,
+            [False, False],
+        )
+
+
+def test_superdense_code_requires_two_clbits():
+    circuit = QuantumCircuit(2, 1)
+
+    with pytest.raises(ValueError):
+        entanglement.superdense_code(
+            circuit,
+            circuit.qubits,
+            circuit.clbits,
+            [False, False],
+        )
+
+
+def test_superdense_code_requires_distinct_clbits():
+    circuit = QuantumCircuit(2, 2)
+
+    with pytest.raises(ValueError):
+        entanglement.superdense_code(
+            circuit,
+            circuit.qubits,
+            [circuit.clbits[0], circuit.clbits[0]],
+            [False, False],
+        )
+
+
+@pytest.mark.parametrize(
+    "message",
+    [
+        [],
+        [False],
+        [False, False, False],
+    ],
+)
+def test_superdense_code_requires_two_message_bits(message):
+    circuit = QuantumCircuit(2, 2)
+
+    with pytest.raises(ValueError):
+        entanglement.superdense_code(
+            circuit,
+            circuit.qubits,
+            circuit.clbits,
+            message,
+        )
