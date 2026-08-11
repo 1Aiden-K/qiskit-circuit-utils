@@ -254,16 +254,3 @@ def y_pairs(
     """Measure each (qubit, classical-bit) pair in the Y basis."""
     for qubit, clbit in pairs:
         y(circuit, qubit, clbit)
-
-
-# Measure entire circuit
-
-
-def measure_all(
-    circuit: QuantumCircuit,
-) -> None:
-    """Measure all qubits.
-
-    Classical bits are added to the circuit automatically by Qiskit.
-    """
-    circuit.measure_all()
