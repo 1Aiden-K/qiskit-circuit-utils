@@ -10,9 +10,18 @@ from ._types import (
     PauliBasis,
     QubitSpecifier,
 )
-from ._validation import require_clbits, require_qubits, require_same_length
+from ._validation import (
+    require_choice,
+    require_clbits,
+    require_distinct_clbits,
+    require_distinct_qubits,
+    require_qubits,
+    require_same_length,
+)
+
 
 # Computational / Z-basis measurement
+
 
 def z(
     circuit: QuantumCircuit,
@@ -27,12 +36,22 @@ def z(
     """
     circuit.measure(qubit, clbit)
 
+
 def z_all(
     circuit: QuantumCircuit,
     qubits: Sequence[QubitSpecifier],
     clbits: Sequence[ClbitSpecifier],
 ) -> None:
-    """Measure each qubit in the Z basis."""
+    """Measure each qubit in the Z basis.
+
+    Args:
+        circuit: Circuit to modify.
+        qubits: Qubits to measure.
+        clbits: Classical bits receiving the measurement results.
+
+    Raises:
+        ValueError: If the number of qubits and classical bits differ.
+    """
     require_same_length(
         qubits,
         clbits,
@@ -41,7 +60,9 @@ def z_all(
 
     circuit.measure(qubits, clbits)
 
+
 # X-basis measurement
+
 
 def x(
     circuit: QuantumCircuit,
@@ -57,12 +78,22 @@ def x(
     circuit.h(qubit)
     circuit.measure(qubit, clbit)
 
+
 def x_all(
     circuit: QuantumCircuit,
     qubits: Sequence[QubitSpecifier],
     clbits: Sequence[ClbitSpecifier],
 ) -> None:
-    """Measure each qubit in the X basis."""
+    """Measure each qubit in the X basis.
+
+    Args:
+        circuit: Circuit to modify.
+        qubits: Qubits to measure.
+        clbits: Classical bits receiving the measurement results.
+
+    Raises:
+        ValueError: If the number of qubits and classical bits differ.
+    """
     require_same_length(
         qubits,
         clbits,
@@ -72,7 +103,9 @@ def x_all(
     circuit.h(qubits)
     circuit.measure(qubits, clbits)
 
+
 # Y-basis measurement
+
 
 def y(
     circuit: QuantumCircuit,
@@ -89,12 +122,22 @@ def y(
     circuit.h(qubit)
     circuit.measure(qubit, clbit)
 
+
 def y_all(
     circuit: QuantumCircuit,
     qubits: Sequence[QubitSpecifier],
     clbits: Sequence[ClbitSpecifier],
 ) -> None:
-    """Measure each qubit in the Y basis."""
+    """Measure each qubit in the Y basis.
+
+    Args:
+        circuit: Circuit to modify.
+        qubits: Qubits to measure.
+        clbits: Classical bits receiving the measurement results.
+
+    Raises:
+        ValueError: If the number of qubits and classical bits differ.
+    """
     require_same_length(
         qubits,
         clbits,
@@ -105,7 +148,9 @@ def y_all(
     circuit.h(qubits)
     circuit.measure(qubits, clbits)
 
+
 # Arbitrary Pauli-basis measurement
+
 
 def pauli(
     circuit: QuantumCircuit,
@@ -126,19 +171,22 @@ def pauli(
     """
     basis = basis.upper()
 
+    require_choice(
+        basis,
+        ("X", "Y", "Z"),
+        name="basis",
+    )
+
     if basis == "X":
         x(circuit, qubit, clbit)
     elif basis == "Y":
         y(circuit, qubit, clbit)
-    elif basis == "Z":
-        z(circuit, qubit, clbit)
     else:
-        raise ValueError(
-            f"Unsupported Pauli basis: {basis!r}. "
-            "Expected 'X', 'Y', or 'Z'."
-        )
+        z(circuit, qubit, clbit)
 
-# Bell basis measurement
+
+# Bell-basis measurement
+
 
 def bell_basis(
     circuit: QuantumCircuit,
@@ -159,14 +207,17 @@ def bell_basis(
 
     Args:
         circuit: Circuit to modify.
-        qubits: Two qubits to measure.
-        clbits: Two classical bits receiving the measurement results.
+        qubits: Two distinct qubits to measure.
+        clbits: Two distinct classical bits receiving the results.
 
     Raises:
         ValueError: If exactly two qubits and classical bits are not provided.
+        ValueError: If duplicate qubits or classical bits are specified.
     """
     require_qubits(qubits, 2)
     require_clbits(clbits, 2)
+    require_distinct_qubits(qubits)
+    require_distinct_clbits(clbits)
 
     q0, q1 = qubits
 
@@ -174,7 +225,9 @@ def bell_basis(
     circuit.h(q0)
     circuit.measure(qubits, clbits)
 
+
 # Pair-based measurement
+
 
 def z_pairs(
     circuit: QuantumCircuit,
@@ -202,9 +255,11 @@ def y_pairs(
     for qubit, clbit in pairs:
         y(circuit, qubit, clbit)
 
+
 # Measure entire circuit
 
-def all(
+
+def measure_all(
     circuit: QuantumCircuit,
 ) -> None:
     """Measure all qubits.

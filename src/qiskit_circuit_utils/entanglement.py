@@ -6,7 +6,13 @@ from qiskit import QuantumCircuit
 
 from . import correction, measurement, preparation
 from ._types import ClbitSpecifier, QubitSpecifier
-from ._validation import require_clbits, require_min_qubits, require_qubits
+from ._validation import (
+    require_clbits,
+    require_distinct_clbits,
+    require_distinct_qubits,
+    require_min_qubits,
+    require_qubits,
+)
 
 
 def swap(
@@ -29,11 +35,13 @@ def swap(
         clbits: Phase and parity measurement bits, in that order.
 
     Raises:
-        ValueError: If exactly three qubits and two classical bits
-            are not provided.
+        ValueError: If exactly three distinct qubits and two distinct
+            classical bits are not provided.
     """
     require_qubits(qubits, 3)
     require_clbits(clbits, 2)
+    require_distinct_qubits(qubits)
+    require_distinct_clbits(clbits)
 
     alice, ancillary, bob = qubits
     phase_bit, parity_bit = clbits
@@ -71,11 +79,13 @@ def teleport(
         clbits: Phase and parity measurement bits, in that order.
 
     Raises:
-        ValueError: If exactly three qubits and two classical bits
-            are not provided.
+        ValueError: If exactly three distinct qubits and two distinct
+            classical bits are not provided.
     """
     require_qubits(qubits, 3)
     require_clbits(clbits, 2)
+    require_distinct_qubits(qubits)
+    require_distinct_clbits(clbits)
 
     source, ancillary, target = qubits
     phase_bit, parity_bit = clbits
@@ -114,8 +124,10 @@ def distribute(
 
     Raises:
         ValueError: If fewer than two qubits are provided.
+        ValueError: If duplicate qubits are specified.
     """
     require_min_qubits(qubits, 2)
+    require_distinct_qubits(qubits)
 
     source, *targets = qubits
 

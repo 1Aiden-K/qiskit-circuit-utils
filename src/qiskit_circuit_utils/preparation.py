@@ -1,10 +1,9 @@
 """Utilities for preparing states across qubits."""
 
-import numpy as np
 from collections.abc import Sequence
 
+import numpy as np
 from qiskit import QuantumCircuit
-from qiskit.circuit import Qubit
 from qiskit.quantum_info import random_statevector
 
 from ._types import (
@@ -13,13 +12,15 @@ from ._types import (
     QubitSpecifier,
 )
 from ._validation import (
+    require_choice,
     require_distinct_qubits,
-    require_length,
     require_min_qubits,
     require_non_empty,
     require_qubits,
+    require_length,
     require_same_length,
 )
+
 
 def bell_state(
     circuit: QuantumCircuit,
@@ -28,22 +29,28 @@ def bell_state(
 ) -> None:
     """Prepare two qubits in one of the four Bell states.
 
-        The qubits are assumed to initially be in the |00> state.
+    The qubits are assumed to initially be in the |00> state.
 
-        Args:
-            circuit: Circuit to modify.
-            qubits: Qubits to prepare. Exactly two qubits are required.
-            state: Bell state to prepare. One of:
-                - "phi+": (|00> + |11>) / sqrt(2)
-                - "phi-": (|00> - |11>) / sqrt(2)
-                - "psi+": (|01> + |10>) / sqrt(2)
-                - "psi-": (|01> - |10>) / sqrt(2)
+    Args:
+        circuit: Circuit to modify.
+        qubits: Qubits to prepare. Exactly two distinct qubits are required.
+        state: Bell state to prepare. One of:
+            - "phi+": (|00> + |11>) / sqrt(2)
+            - "phi-": (|00> - |11>) / sqrt(2)
+            - "psi+": (|01> + |10>) / sqrt(2)
+            - "psi-": (|01> - |10>) / sqrt(2)
 
-        Raises:
-            ValueError: If an unsupported Bell state is specified.
-            ValueError: If more or less than two qubits are specified.
+    Raises:
+        ValueError: If exactly two distinct qubits are not specified.
+        ValueError: If an unsupported Bell state is specified.
     """
     require_qubits(qubits, 2)
+    require_distinct_qubits(qubits)
+    require_choice(
+        state,
+        ("phi+", "phi-", "psi+", "psi-"),
+        name="state",
+    )
 
     q0, q1 = qubits
 
@@ -57,8 +64,7 @@ def bell_state(
     elif state == "psi-":
         circuit.x(q1)
         circuit.z(q0)
-    elif state != "phi+":
-        raise ValueError(f"Unsupported Bell state: {state!r}")
+
 
 def ghz_state(
     circuit: QuantumCircuit,
@@ -70,17 +76,20 @@ def ghz_state(
 
     Args:
         circuit: Circuit to modify.
-        qubits: Qubits to prepare. At least two qubits are required.
+        qubits: Qubits to prepare. At least two distinct qubits are required.
 
     Raises:
         ValueError: If fewer than two qubits are specified.
+        ValueError: If duplicate qubits are specified.
     """
     require_min_qubits(qubits, 2)
+    require_distinct_qubits(qubits)
 
     circuit.h(qubits[0])
 
     for control, target in zip(qubits, qubits[1:]):
         circuit.cx(control, target)
+
 
 def w_state(
     circuit: QuantumCircuit,
@@ -93,10 +102,12 @@ def w_state(
 
     Args:
         circuit: Circuit to modify.
-        qubits: Qubits on which to prepare the W state.
+        qubits: Qubits on which to prepare the W state. At least two
+            distinct qubits are required.
 
     Raises:
         ValueError: If fewer than two qubits are provided.
+        ValueError: If duplicate qubits are specified.
     """
     require_min_qubits(qubits, 2)
     require_distinct_qubits(qubits)
@@ -110,6 +121,7 @@ def w_state(
 
     circuit.initialize(state, qubits)
 
+
 def zero_state(
     circuit: QuantumCircuit,
     qubits: Sequence[QubitSpecifier],
@@ -119,8 +131,14 @@ def zero_state(
     Args:
         circuit: Circuit to modify.
         qubits: Qubits to prepare.
+
+    Raises:
+        ValueError: If duplicate qubits are specified.
     """
+    require_distinct_qubits(qubits)
+
     circuit.reset(qubits)
+
 
 def one_state(
     circuit: QuantumCircuit,
@@ -131,9 +149,15 @@ def one_state(
     Args:
         circuit: Circuit to modify.
         qubits: Qubits to prepare.
+
+    Raises:
+        ValueError: If duplicate qubits are specified.
     """
+    require_distinct_qubits(qubits)
+
     circuit.reset(qubits)
     circuit.x(qubits)
+
 
 def plus_state(
     circuit: QuantumCircuit,
@@ -144,9 +168,15 @@ def plus_state(
     Args:
         circuit: Circuit to modify.
         qubits: Qubits to prepare.
+
+    Raises:
+        ValueError: If duplicate qubits are specified.
     """
+    require_distinct_qubits(qubits)
+
     circuit.reset(qubits)
     circuit.h(qubits)
+
 
 def minus_state(
     circuit: QuantumCircuit,
@@ -157,10 +187,16 @@ def minus_state(
     Args:
         circuit: Circuit to modify.
         qubits: Qubits to prepare.
+
+    Raises:
+        ValueError: If duplicate qubits are specified.
     """
+    require_distinct_qubits(qubits)
+
     circuit.reset(qubits)
     circuit.x(qubits)
     circuit.h(qubits)
+
 
 def basis_state(
     circuit: QuantumCircuit,
@@ -173,11 +209,16 @@ def basis_state(
         circuit: Circuit to modify.
         qubits: Qubits to prepare.
         state: Bit string describing the state, such as "101".
+            Bits correspond positionally to ``qubits``: ``state[i]``
+            specifies the state of ``qubits[i]``.
 
     Raises:
         ValueError: If the bit string length does not match the number
             of qubits or contains characters other than "0" and "1".
+        ValueError: If duplicate qubits are specified.
     """
+    require_distinct_qubits(qubits)
+
     require_same_length(
         state,
         qubits,
@@ -193,6 +234,7 @@ def basis_state(
         if bit == "1":
             circuit.x(qubit)
 
+
 def uniform_superposition(
     circuit: QuantumCircuit,
     qubits: Sequence[QubitSpecifier],
@@ -204,8 +246,14 @@ def uniform_superposition(
     Args:
         circuit: Circuit to modify.
         qubits: Qubits to place into uniform superposition.
+
+    Raises:
+        ValueError: If duplicate qubits are specified.
     """
+    require_distinct_qubits(qubits)
+
     circuit.h(qubits)
+
 
 def statevector(
     circuit: QuantumCircuit,
@@ -222,16 +270,18 @@ def statevector(
     Raises:
         ValueError: If the statevector dimension does not match the
             number of qubits.
+        ValueError: If duplicate qubits are specified.
     """
-    expected_size = 2 ** len(qubits)
+    require_distinct_qubits(qubits)
 
     require_length(
         statevector,
-        expected_size,
+        2 ** len(qubits),
         name="statevector",
     )
 
     circuit.initialize(statevector, qubits)
+
 
 def product_state(
     circuit: QuantumCircuit,
@@ -250,18 +300,28 @@ def product_state(
 
     Raises:
         ValueError: If the number of states does not match the number
-            of qubits or a state does not contain exactly two amplitudes.
+            of qubits.
+        ValueError: If duplicate qubits are specified.
+        ValueError: If any single-qubit state does not contain exactly two amplitudes.
     """
+    require_distinct_qubits(qubits)
+
     require_same_length(
         states,
         qubits,
         names=("states", "qubits"),
     )
 
-    for qubit, state in zip(qubits, states):
-        require_length(state, 2, name="single-qubit state")
+    for state in states:
+        require_length(
+            state,
+            2,
+            name="single-qubit statevector amplitudes",
+        )
 
+    for qubit, state in zip(qubits, states):
         circuit.initialize(state, [qubit])
+
 
 def random_state(
     circuit: QuantumCircuit,
@@ -274,16 +334,22 @@ def random_state(
         circuit: Circuit to modify.
         qubits: Qubits on which to prepare the state.
         seed: Optional random seed for reproducibility.
+
+    Raises:
+        ValueError: If no qubits are specified.
+        ValueError: If duplicate qubits are specified.
     """
     require_non_empty(qubits, name="qubits")
+    require_distinct_qubits(qubits)
 
     state = random_statevector(2 ** len(qubits), seed=seed)
 
     circuit.initialize(state.data, qubits)
 
+
 def x_eigenstate(
     circuit: QuantumCircuit,
-    qubit: Qubit,
+    qubit: QubitSpecifier,
     eigenvalue: Eigenvalue = 1,
 ) -> None:
     """Prepare an eigenstate of the Pauli-X operator.
@@ -296,8 +362,11 @@ def x_eigenstate(
     Raises:
         ValueError: If eigenvalue is not +1 or -1.
     """
-    if eigenvalue not in (1, -1):
-        raise ValueError("Eigenvalue must be +1 or -1.")
+    require_choice(
+        eigenvalue,
+        (1, -1),
+        name="eigenvalue",
+    )
 
     circuit.reset(qubit)
 
@@ -306,9 +375,10 @@ def x_eigenstate(
 
     circuit.h(qubit)
 
+
 def y_eigenstate(
     circuit: QuantumCircuit,
-    qubit: Qubit,
+    qubit: QubitSpecifier,
     eigenvalue: Eigenvalue = 1,
 ) -> None:
     """Prepare an eigenstate of the Pauli-Y operator.
@@ -321,8 +391,11 @@ def y_eigenstate(
     Raises:
         ValueError: If eigenvalue is not +1 or -1.
     """
-    if eigenvalue not in (1, -1):
-        raise ValueError("Eigenvalue must be +1 or -1.")
+    require_choice(
+        eigenvalue,
+        (1, -1),
+        name="eigenvalue",
+    )
 
     circuit.reset(qubit)
     circuit.h(qubit)
@@ -332,9 +405,10 @@ def y_eigenstate(
     else:
         circuit.sdg(qubit)
 
+
 def z_eigenstate(
     circuit: QuantumCircuit,
-    qubit: Qubit,
+    qubit: QubitSpecifier,
     eigenvalue: Eigenvalue = 1,
 ) -> None:
     """Prepare an eigenstate of the Pauli-Z operator.
@@ -347,23 +421,27 @@ def z_eigenstate(
     Raises:
         ValueError: If eigenvalue is not +1 or -1.
     """
-    if eigenvalue not in (1, -1):
-        raise ValueError("Eigenvalue must be +1 or -1.")
+    require_choice(
+        eigenvalue,
+        (1, -1),
+        name="eigenvalue",
+    )
 
     circuit.reset(qubit)
 
     if eigenvalue == -1:
         circuit.x(qubit)
 
+
 def bloch_state(
     circuit: QuantumCircuit,
-    qubit: Qubit,
+    qubit: QubitSpecifier,
     theta: float,
     phi: float,
 ) -> None:
     """Prepare a single-qubit state using Bloch-sphere angles.
 
-    Prepares the state
+    Prepares, up to global phase, the state
 
         cos(theta / 2)|0> + exp(i * phi) sin(theta / 2)|1>.
 

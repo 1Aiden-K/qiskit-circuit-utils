@@ -492,7 +492,7 @@ def test_bell_basis_transform(
 def test_measure_all():
     circuit = QuantumCircuit(3)
 
-    measurement.all(circuit)
+    measurement.measure_all(circuit)
 
     names = instruction_names(circuit)
 

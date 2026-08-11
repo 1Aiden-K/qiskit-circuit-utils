@@ -7,6 +7,7 @@ from ._types import ClbitSpecifier, QubitSpecifier
 
 T = TypeVar("T")
 
+
 def require_length(
     values: Sequence[T],
     count: int,
@@ -28,6 +29,7 @@ def require_length(
             f"Expected exactly {count} {name}, got {len(values)}."
         )
 
+
 def require_min_length(
     values: Sequence[T],
     minimum: int,
@@ -48,6 +50,7 @@ def require_min_length(
         raise ValueError(
             f"Expected at least {minimum} {name}, got {len(values)}."
         )
+
 
 def require_same_length(
     *sequences: Sequence[object],
@@ -84,6 +87,7 @@ def require_same_length(
         f"Expected sequences of equal length, got {details}."
     )
 
+
 def require_non_empty(
     values: Sequence[T],
     *,
@@ -101,17 +105,51 @@ def require_non_empty(
     if not values:
         raise ValueError(f"Expected at least one {name}.")
 
+
 def require_distinct(
     values: Sequence[T],
     *,
     name: str = "values",
 ) -> None:
-    """Require all elements in a sequence to be distinct."""
+    """Require all elements in a sequence to be distinct.
+
+    Args:
+        values: Sequence to validate.
+        name: Name used in the error message.
+
+    Raises:
+        ValueError: If the sequence contains duplicate elements.
+    """
     for index, value in enumerate(values):
         if value in values[index + 1:]:
             raise ValueError(f"Expected distinct {name}.")
 
+
+def require_choice(
+    value: T,
+    choices: Sequence[T],
+    *,
+    name: str = "value",
+) -> None:
+    """Require a value to be one of the allowed choices.
+
+    Args:
+        value: Value to validate.
+        choices: Allowed values.
+        name: Name used in the error message.
+
+    Raises:
+        ValueError: If the value is not an allowed choice.
+    """
+    if value not in choices:
+        choices_text = ", ".join(repr(choice) for choice in choices)
+        raise ValueError(
+            f"Expected {name} to be one of {choices_text}, got {value!r}."
+        )
+
+
 # Qubit validation
+
 
 def require_qubits(
     qubits: Sequence[QubitSpecifier],
@@ -119,6 +157,7 @@ def require_qubits(
 ) -> None:
     """Require exactly ``count`` qubits."""
     require_length(qubits, count, name="qubits")
+
 
 def require_min_qubits(
     qubits: Sequence[QubitSpecifier],
@@ -134,7 +173,9 @@ def require_distinct_qubits(
     """Require all specified qubits to be distinct."""
     require_distinct(qubits, name="qubits")
 
+
 # Classical-bit validation
+
 
 def require_clbits(
     clbits: Sequence[ClbitSpecifier],
@@ -143,8 +184,32 @@ def require_clbits(
     """Require exactly ``count`` classical bits."""
     require_length(clbits, count, name="classical bits")
 
+
 def require_distinct_clbits(
     clbits: Sequence[ClbitSpecifier],
 ) -> None:
     """Require all specified classical bits to be distinct."""
     require_distinct(clbits, name="classical bits")
+
+def require_length(
+    values: Sequence[T],
+    count: int,
+    *,
+    name: str = "values",
+) -> None:
+    """Require a sequence to contain exactly ``count`` elements.
+
+    Args:
+        values: Sequence to validate.
+        count: Required number of elements.
+        name: Name used in the error message.
+
+    Raises:
+        ValueError: If the sequence does not have the required length.
+    """
+    actual = len(values)
+
+    if actual != count:
+        raise ValueError(
+            f"Expected exactly {count} {name}, got {actual}."
+        )
