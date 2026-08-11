@@ -5,13 +5,15 @@ from collections.abc import Sequence
 from qiskit import QuantumCircuit
 
 from . import correction, measurement, preparation
-from ._types import ClbitSpecifier, QubitSpecifier
+from ._types import ClbitSpecifier, QubitSpecifier, BinaryValue
 from ._validation import (
     require_clbits,
     require_distinct_clbits,
     require_distinct_qubits,
     require_min_qubits,
     require_qubits,
+    require_choice,
+    require_length,
 )
 
 
@@ -227,3 +229,58 @@ def transfer(
 
     source, target = qubits
     circuit.swap(source, target)
+
+
+def superdense_code(
+    circuit: QuantumCircuit,
+    qubits: Sequence[QubitSpecifier],
+    clbits: Sequence[ClbitSpecifier],
+    message: tuple[BinaryValue, BinaryValue],
+) -> None:
+    """Transmit two classical bits using superdense coding.
+
+    The qubits must be ordered as ``[alice, bob]``. Both qubits are
+    assumed to initially be in |0>.
+
+    The message must be ordered as ``[phase_bit, parity_bit]``.
+    The classical bits receive the decoded message in the same order.
+
+    Args:
+        circuit: Circuit to modify.
+        qubits: Alice and Bob qubits, in that order.
+        clbits: Classical bits for the decoded message.
+        message: Phase and parity bits to transmit, in that order.
+
+    Raises:
+        ValueError: If exactly two distinct qubits and two distinct
+            classical bits are not provided.
+        ValueError: If exactly two message bits are not provided.
+    """
+    require_qubits(qubits, 2)
+    require_clbits(clbits, 2)
+    require_distinct_qubits(qubits)
+    require_distinct_clbits(clbits)
+    require_length(message, 2, name="message bits")
+
+    for bit in message:
+        require_choice(bit, (0, 1), name="message bit")
+
+    alice, bob = qubits
+    phase_bit, parity_bit = message
+
+    preparation.bell_state(
+        circuit,
+        [alice, bob],
+    )
+
+    if parity_bit:
+        circuit.x(alice)
+
+    if phase_bit:
+        circuit.z(alice)
+
+    measurement.bell_basis(
+        circuit,
+        [alice, bob],
+        clbits,
+    )

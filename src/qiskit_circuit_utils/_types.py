@@ -56,3 +56,6 @@ Eigenvalue: TypeAlias = Literal[
     1,
 ]
 """An eigenvalue of a Pauli operator."""
+
+BinaryValue: TypeAlias = Literal[0, 1]
+"""More explicit 1 or 0"""
