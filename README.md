@@ -53,6 +53,7 @@ measurement.z(circuit, 1, 1)
 The public API is organized into modules according to functionality.
 
 ### `preparation`
+See the [full `preparation` API reference](docs/preparation.md).
 
 State-preparation utilities, including:
 
@@ -77,6 +78,7 @@ prep.bell_state(circuit, [0, 1], state="psi+")
 ```
 
 ### `measurement`
+See the [full `measurement` API reference](docs/measurement.md).
 
 Measurement utilities for:
 
@@ -97,6 +99,7 @@ measurement.y(circuit, 1, 1)
 ```
 
 ### `correction`
+See the [full `correction` API reference](docs/correction.md).
 
 Classically controlled correction operations, including:
 
@@ -108,6 +111,7 @@ Classically controlled correction operations, including:
 These utilities are useful when constructing protocols involving measurement-dependent corrections.
 
 ### `entanglement`
+See the [full `entanglement` API reference](docs/entanglement.md).
 
 Higher-level entanglement and communication protocols, including:
 
@@ -132,6 +136,7 @@ entanglement.teleport(
 ```
 
 ### `operation`
+See the [full `operation` API reference](docs/operation.md).
 
 General circuit operations not specific to state preparation, measurement, or protocols.
 
@@ -147,6 +152,7 @@ operation.reverse(circuit, [0, 1, 2, 3])
 ```
 
 ### `transform`
+See the [full `transform` API reference](docs/transform.md).
 
 Quantum circuit transformations, including:
 
